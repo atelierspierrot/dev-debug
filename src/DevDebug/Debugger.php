@@ -15,7 +15,7 @@ namespace DevDebug;
  * Creates each stack of debugging info
  *
  * @author 		Pierre Cassat & contributors <piero.wbmstr@gmail.com>
- * @see \Dev\Debugger
+ * @see \DevDebug\Debugger
  */
 class DebuggerItem
 {
@@ -40,7 +40,7 @@ class DebuggerItem
 
 	protected function getDebugger()
 	{
-		return Debugger::instance();
+		return Debugger::getInstance();
 	}	
 
 	public function setTitle($title)
@@ -119,21 +119,19 @@ class Debugger
 		self::setStacks( self::$default_stacks );
 	}
 	
-	public static function instance()
+	public static function getInstance()
 	{
-    if(!isset(self::$instance) || !is_object(self::$instance)) {
-    	self::$instance = new Debugger;
-    	self::$instance->init();
-    }
-    return self::$instance;
+        if (!isset(self::$instance) || !is_object(self::$instance)) {
+            self::$instance = new Debugger;
+            self::$instance->init();
+        }
+        return self::$instance;
 	}
 
 	public function checkUri()
 	{
-		foreach(self::$debugger_arguments as $fct=>$arg) 
-		{
-			if (isset($_GET[$arg])) 
-			{
+		foreach(self::$debugger_arguments as $fct=>$arg) {
+			if (isset($_GET[$arg])) {
 				$_meth = 'set'.ucfirst($fct);
 				if (method_exists($this, $_meth))
 					$this->$_meth( $_GET[$arg] );
@@ -145,12 +143,11 @@ class Debugger
 
 	public static function shutdown($exit = false, $callback = null)
 	{
-    	$_this =& self::instance();
+    	$_this =& self::getInstance();
 		if (Debugger::$shutdown===true) return true;
 		$_this->checkUri();
 
-    	if (!empty($_this->messages)) 
-    	{
+    	if (!empty($_this->messages)) {
 			Debugger::$shutdown=true;
 
 			if (!empty($callback) && is_callable($callback) &&
@@ -235,8 +232,7 @@ class Debugger
 	{
 		$item = new DebuggerItem( $type, $entity, $title );
 		$this->stacks[] = $item;
-		switch($type) 
-		{
+		switch($type) {
 			case 'message':
 				$this->addMessage($item);
 				if (isset($entity['traces']) && !empty($entity['traces']))
@@ -251,8 +247,7 @@ class Debugger
 	
 	public function setStacks($stacks)
 	{
-		foreach($stacks as $_stack) 
-		{
+		foreach($stacks as $_stack) {
 			if (isset($_stack['type']))
 				self::addStack( 
 					$_stack['type'],
@@ -264,11 +259,9 @@ class Debugger
 	
 	public function getStacks($with_messages = false)
 	{
-		if ($with_messages===false) 
-		{
+		if ($with_messages===false) {
 			$stacks = array();
-			foreach($this->stacks as $_stack) 
-			{
+			foreach($this->stacks as $_stack) {
 				if ($_stack->getType()!='message') $stacks[] = $_stack;
 			}
 		} else {
@@ -314,8 +307,7 @@ class Debugger
 
 	public function renderFormatedString($str, $format, $return = false)
 	{
-		if ($format=='plain_text') 
-		{
+		if ($format=='plain_text') {
 			if (class_exists('html2text'))
 				$str = html2text::convert( $str );
 			else

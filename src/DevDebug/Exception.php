@@ -71,7 +71,7 @@ class Exception extends InternalException
 		if (isset($php_errormsg))
 			$this->php_error_message = $php_errormsg;
 
-		$dom_id = Profiler::getNewDomId( 'exception' );
+		$dom_id = Profiler::getNewDomId('exception');
 		$this->infos = array(
 			'message' => self::_buildExceptionStr(),
 			'type'=>'exception',
@@ -84,7 +84,7 @@ class Exception extends InternalException
 			'source' => Profiler::getHighlightedSource($this->getFile(), $this->getLine()),
 		);
 		$this->infos['traces'] = Profiler::getHighlightedTraces($this->getTrace(), $this->infos);
-		$this->debugger =& Debugger::instance();
+		$this->debugger =& Debugger::getInstance();
 		$this->debugger->addStack('message', $this->infos);
 		$this->debugger->setDebuggerTitle( self::_buildExceptionStr(true), Url::getCurrentUrl() );
 	}

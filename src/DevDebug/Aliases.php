@@ -17,7 +17,7 @@ namespace DevDebug\Aliases {}
  */
 namespace {
 
-    use DevDebug\Debugger,
+    use DevDebug\Debugger as Debugger,
         DevDebug\ErrorException as DevDebugErrorException,
         DevDebug\Exception as DevDebugException;
 
@@ -26,38 +26,39 @@ namespace {
     define('_DEVDEBUG_ERROR_HANDLER', true); // false by default
     define('_DEVDEBUG_EXCEPTION_HANDLER', true); // false by default
     define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
+    #define('_DEVDEBUG_SHUTDOWN_CALLBACK', "your callback"); // empty by default
     */
 
     // the internal errors & exceptions handlers
-    $abcdefghijklmnopqrstuvwxyz = Debugger::instance();
+    $abcdefghijklmnopqrstuvwxyz = Debugger::getInstance();
 
-    if (!@function_exists('appShutdownHandler'))
+    if (!@function_exists('devdebugShutdownHandler'))
     {
 
-        if (defined('_DEVDEBUG_SHUTDOWN_HANDLER') && _DEVDEBUG_SHUTDOWN_HANDLER) {
+        if (defined('_DEVDEBUG_SHUTDOWN_HANDLER') && true===_DEVDEBUG_SHUTDOWN_HANDLER) {
             register_shutdown_function('devdebugShutdownHandler', defined('_DEVDEBUG_SHUTDOWN_CALLBACK') ? _DEVDEBUG_SHUTDOWN_CALLBACK : null);
         }
 
         /**
          * Application specific shutdown handling
          */
-        function devdebugShutdownHandler( &$arg=null, $callback=null )
+        function devdebugShutdownHandler(&$arg = null, $callback = null)
         {
             return Debugger::shutdown(true, $callback);
         }
     }
 
-    if (!@function_exists('appErrorHandler'))
+    if (!@function_exists('devdebugErrorHandler'))
     {
 
-        if (defined('_DEVDEBUG_ERROR_HANDLER') && _DEVDEBUG_ERROR_HANDLER) {
+        if (defined('_DEVDEBUG_ERROR_HANDLER') && true===_DEVDEBUG_ERROR_HANDLER) {
             set_error_handler('devdebugErrorHandler', error_reporting());
         }
 
         /**
          * Application specific error handling
          */
-        function devdebugErrorHandler( $errno, $errstr, $errfile, $errline, $errcontext )
+        function devdebugErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
         {
             // This error code is not in the error_reporting()
             if (!(error_reporting() & $errno)) return false;
@@ -66,18 +67,19 @@ namespace {
         }
     }
 
-    if (!@function_exists('appExceptionHandler'))
+    if (!@function_exists('devdebugExceptionHandler'))
     {
 
-        if (!defined('_DEVDEBUG_EXCEPTION_HANDLER') && _DEVDEBUG_EXCEPTION_HANDLER) {
+        if (defined('_DEVDEBUG_EXCEPTION_HANDLER') && true===_DEVDEBUG_EXCEPTION_HANDLER) {
             set_exception_handler('devdebugExceptionHandler');
         }
 
         /**
          * Application specific exception handling
          */
-        function devdebugExceptionHandler( $e )
+        function devdebugExceptionHandler($e)
         {
+exit('yo');
             // The last call was escaped with '@'
             if (0===error_reporting()) return false;
             $e = new DevDebugException($e->getMessage(), $e->getCode(), $e->getPrevious());

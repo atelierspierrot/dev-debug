@@ -38,10 +38,8 @@ class PhpListener
 	public static function getTraceInfo($index = 0, $type = null, $arg_index = null)
 	{
 		$trace = self::getTrace($index);
-		if (!is_null($trace))
-		{
-			switch ($type)
-			{
+		if (!is_null($trace)) {
+			switch ($type) {
 				case 'func': case 'function' :
 					return isset($trace['function']) ? $trace['function'] : null; 
 					break;
@@ -64,8 +62,7 @@ class PhpListener
 					return isset($trace['args']) ? $trace['args'] : null; 
 					break;
 				case 'arg': case 'argument':
-					if (!is_null($arg_index))
-					{
+					if (!is_null($arg_index)) {
 						return isset($trace['args']) && isset($trace['args'][$arg_index]) ? $trace['args'][$arg_index] : null; 
 					}
 					break;

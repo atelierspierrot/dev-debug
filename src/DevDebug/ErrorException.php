@@ -139,7 +139,7 @@ class ErrorException extends InternalErrorException
 			'source' => Profiler::getHighlightedSource($this->getFile(), $this->getLine()),
 		);
 		$this->infos['traces'] = Profiler::getHighlightedTraces($this->getTrace(), $this->infos);
-		$this->debugger =& Debugger::instance();
+		$this->debugger =& Debugger::getInstance();
 		$this->debugger->addStack('message', $this->infos);
 		$this->debugger->setDebuggerTitle( self::_buildExceptionStr(true), Url::getCurrentUrl() );
 		return false;
@@ -166,9 +166,9 @@ class ErrorException extends InternalErrorException
 		if ($short===false) {
 			$str = sprintf(self::long_title, $this->getScope(), $this->getMessage(), $this->getCode());
 			if (!empty($this->severity))
-				$_str .= " | severity : ".$this->getSeverity();
+				$str .= " | severity : ".$this->getSeverity();
 			if (!empty($this->php_error_message))
-				$_str .= " | ".$this->php_error_message;
+				$str .= " | ".$this->php_error_message;
 		} else {
 			$str = sprintf(self::short_title, $this->getScope(), $this->getMessage(), $this->getCode());
 		}

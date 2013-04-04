@@ -77,26 +77,27 @@ class Profiler
 	public function renderProfilingTitle($format = 'html')
 	{
 		$title='';
-		if (empty($this->title))
+		if (empty($this->title)) {
 			$title .= self::default_profiler_title;
-		else
+		} else {
 			$title .= $this->title;
-		if (!empty($this->url))
-		{
+		}
+		if (!empty($this->url)) {
 			$_url = str_replace('&', '&amp;', $this->url);
-			$title .= sprintf(self::mask_profiler_url, $_url, str_replace(_ROOTHTTP, '/', $_url));
+			$title .= sprintf(self::mask_profiler_url, $_url, str_replace($this->getRootHttp(), '/', $_url));
 		}
 		return $title;
 	}
 
 	public function renderProfilingInfo($format = 'html')
 	{
-		if( isset($_SERVER['HTTP_X_FORWARDED_FOR']) )
+		if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 			$ip = $_SERVER['HTTP_X_FORWARDED_FOR']; 
-		elseif( isset($_SERVER['HTTP_CLIENT_IP']) )
+		} elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
 			$ip = $_SERVER['HTTP_CLIENT_IP'];
-		else
+		} else {
 			$ip = $_SERVER['REMOTE_ADDR'];
+		}
 		$info = sprintf(self::mask_abbr, date('c').' '.date_default_timezone_get(), strftime('%c', time()));
 		return sprintf(self::mask_profiler_info, $ip, $info);
 	}
@@ -105,12 +106,9 @@ class Profiler
 	{
 		// organize types by priority
 		$organized_messages=$organized_types=array();
-		foreach($messages as $type=>$type_messages) 
-		{
-			foreach(ErrorException::$error_types as $type_info) 
-			{
-				if ($type_info['type']==$type) 
-				{
+		foreach($messages as $type=>$type_messages) {
+			foreach(ErrorException::$error_types as $type_info) {
+				if ($type_info['type']==$type) {
 					$organized_messages[$type_info['priority']] = $type_messages;
 					$organized_types[$type_info['priority']] = $type_info;
 				}
@@ -121,8 +119,7 @@ class Profiler
 
 		// then render messages
 		$str='';
-		foreach($organized_messages as $type=>$type_messages) 
-		{
+		foreach($organized_messages as $type=>$type_messages) {
 			$str .= self::renderMessagesFromType( $organized_types[$type], $type_messages, $format );
 		}
 		return $str;
@@ -271,8 +268,7 @@ class Profiler
 		if (!is_array($trace)) $trace = array( 0=>$trace );
 		$built_trace = array();
 		$trace_count = count($trace);
-		foreach($trace as $k=>$trace_item) 
-		{
+		foreach($trace as $k=>$trace_item) {
 			$item = $trace_item;
 			// dom ID
 			if (empty($item['dom_id']))
@@ -290,7 +286,7 @@ class Profiler
 			if (isset($item['class'])) {
 				$item['called'] = $item['class'].$item['type'].$item['function'];
 			} else {
-				$item['called'] = $item['function'];
+				$item['called'] = isset($item['function']) ? $item['function'] : '-';
 			}
 			// formated args
 			if (isset($item['args']) && count($item['args'])>0) {
@@ -326,8 +322,7 @@ class Profiler
 			$argumentsReflect = $functionReflect->getParameters();
 		}
 
-		foreach($args as $k=>$arg_item) 
-		{
+		foreach($args as $k=>$arg_item) {
 			$item = array();
 			$item['value'] = $arg_item;
 			$item['type'] = gettype($arg_item);
@@ -389,8 +384,7 @@ class Profiler
 
 		$caption = (!empty($caption) ? $caption.' (' : '').$count.($count>1 ? ' entries' : ' entry').')';
 
-		if ($value_cells==array('normal')) 
-		{
+		if ($value_cells==array('normal')) {
 			$table_head = sprintf(self::mask_table_line,
 					sprintf(self::mask_table_head_cell, $key_head)
 				.sprintf(self::mask_table_head_cell, $value_head)
@@ -511,8 +505,7 @@ class Profiler
 		if (!is_array($trace)) $trace = array( 0=>$trace );
 		$traces_str = '';
 
-		foreach($trace as $k=>$item)
-		{
+		foreach($trace as $k=>$item) {
 			$dom_id = isset($item['dom_id']) ? $item['dom_id'] : uniqid();
 			if (isset($item['highlighted']) && $item['highlighted']==true)
 				$traces_str .= sprintf(self::mask_trace_item_on, $dom_id, self::formatTraceItem( $item, $k ));
@@ -535,11 +528,11 @@ class Profiler
 		$item_str='';
 
 		$params = array();
-		if (!empty($item['arguments']))
-		foreach($item['arguments'] as $k=>$arg) 
-		{
-			$params[] = self::formatParam( $arg, $k, $format );
-		}
+		if (!empty($item['arguments'])) {
+            foreach($item['arguments'] as $k=>$arg) {
+                $params[] = self::formatParam( $arg, $k, $format );
+            }
+        }
 
 		$item_str_call_info = '';
 
@@ -549,18 +542,15 @@ class Profiler
 		$call_info = $item['called'];
 		$parts=array();
 		$jointure='';
-		if (substr_count($item['called'], '->')) 
-		{
+		if (substr_count($item['called'], '->')) {
 			$jointure='->';
 			$parts = preg_split('/->/', $item['called']);
 		}
-		if (substr_count($item['called'], '::')) 
-		{
+		if (substr_count($item['called'], '::')) {
 			$jointure='::';
 			$parts = preg_split('/::/', $item['called']);
 		}
-		if (count($parts)) 
-		{
+		if (count($parts)) {
 			$cls_info = self::buildClassInfo( $parts[0] );
 			$call_info = sprintf(self::mask_abbr, 
 				self::formatClassName($cls_info, 'txt'), $parts[0]).$jointure.$parts[1];
@@ -576,23 +566,20 @@ class Profiler
 
 		$bloc_linkers = $bloc_altinfos = '';
 
-		if (!empty($item['source'])) 
-		{
+		if (!empty($item['source'])) {
 			$source_bloc_id = 'sb_'.uniqid();
 			$bloc_linkers .= sprintf(self::mask_bloc_linker, $source_bloc_id, 'the source code', 'source');
 			$bloc_altinfos .= sprintf(self::mask_bloc_altinfo, 'source_code', $source_bloc_id, $item['source']);
 		}
 
-		if (!empty($item['trace'])) 
-		{
+		if (!empty($item['trace'])) {
 			$trace_bloc_id = 'tb_'.uniqid();
 			$bloc_linkers .= sprintf(self::mask_bloc_linker, $trace_bloc_id, 'the full PHP trace', 'full trace');
 			$trace_str = sprintf(self::mask_code, self::dumpArray($item['trace']));
 			$bloc_altinfos .= sprintf(self::mask_bloc_altinfo, 'full_trace', $trace_bloc_id, $trace_str);
 		}
 
-		if (!empty($item['related_dom_id'])) 
-		{
+		if (!empty($item['related_dom_id'])) {
 			$_ttl = !empty($item['message']) ? 'trace' : 'message';
 			$bloc_linkers .= sprintf(self::mask_dom_linker, $item['related_dom_id'], 'related '.$_ttl, $_ttl);
 		}
@@ -613,14 +600,12 @@ class Profiler
 	{
 		$param_str = '';
 		$index='';
-		if (!empty($key)) 
-		{
+		if (!empty($key)) {
 			 if (is_string($key)) $index = '['.$key.'] ';
 			 else $index = '#'.$key.' ';
 		}
 
-		if ($item['type']=='NULL') 
-		{
+		if ($item['type']=='NULL') {
 			if (is_string($key)) {
 				$param_str .= sprintf(self::mask_abbr, $index, 'NULL');
 			} else {
@@ -704,24 +689,24 @@ class Profiler
 		$cls_str .= ']';
 */
 		$cls_str = 'Object of class '.$class['full_name'].' [in '.$class['filename'].' at line '.$class['start_line'].']';
-		if (!empty($class['parent'])) 
-		{
+		if (!empty($class['parent'])) {
 			$cls_str .= ' extending class '.$class['parent']['full_name'];
 			if (!empty($class['parent']['filename']) && !empty($class['parent']['start_line']))
 				$cls_str .= ' [in '.$class['parent']['filename'].' at line '.$class['parent']['start_line'].']';
 		}
-		if (count($class['interfaces']))
-		foreach($class['interfaces'] as $int) 
-		{
-			$cls_str .= ' implementing interface '.$int['full_name'].' [in '.$int['filename'].' at line '.$int['start_line'].']';
-		}
+		if (isset($class['interfaces']) && count($class['interfaces'])) {
+            foreach($class['interfaces'] as $int) {
+                $cls_str .= ' implementing interface '.$int['full_name'].' [in '.$int['filename'].' at line '.$int['start_line'].']';
+            }
+        }
 		return $cls_str;
 	}
 	
-	public static function formatPath($path, $format = 'html')
+	public static function formatPath($path, $format = 'html', $skip_turns = 2)
 	{
-		$rootdir_info = $format=='html' ? sprintf(self::mask_abbr, _ROOTDIR, '_ROOTDIR').'/' : '_ROOTDIR/';
-		return str_replace(_ROOTDIR, $rootdir_info, $path);
+	    $root_dir = self::getRootDir();
+		$rootdir_info = $format=='html' ? sprintf(self::mask_abbr, $root_dir, '_ROOTDIR').'/' : '_ROOTDIR/';
+		return str_replace($root_dir, $rootdir_info, $path);
 	}
 
 	/**
@@ -734,7 +719,23 @@ class Profiler
 	{
 		return sprintf(self::mask_message_item, (isset($infos['dom_id']) ? $infos['dom_id'] : ''), self::formatTraceItem($infos, 0));
 	}
-	
+
+	/**
+	 * Get the path that seem to be thr root project directory
+	 */
+	public static function getRootDir()
+	{
+		return defined('_ROOTDIR') ? _ROOTDIR : $_SERVER['DOCUMENT_ROOT'];
+	}
+
+	/**
+	 * Get the path that seem to be thr root http url
+	 */
+	public static function getRootHttp()
+	{
+		return defined('_ROOTHTTP') ? _ROOTHTTP : Url::getCurrentUrl(false, true);
+	}
+
 // ----------------------------------
 // Getters / Setters
 // ----------------------------------
@@ -798,7 +799,7 @@ class Profiler
 	 */
 	public static function getSession()
 	{
-		return self::ksort($_SESSION);
+		return !empty($_SESSION) ? self::ksort($_SESSION) : array();
 	}
 
 	/**
@@ -832,13 +833,13 @@ class Profiler
 	public static function getFunctions($arg = 'user')
 	{
 		$f_list = array_reverse(get_defined_functions());
-		if (!empty($arg))
-		switch($arg) 
-		{
-			case 'user': $f_list = $f_list['user']; break;
-			case 'internal': unset($f_list['user']); break;
-			default: break;
-		}
+		if (!empty($arg)) {
+            switch($arg) {
+                case 'user': $f_list = $f_list['user']; break;
+                case 'internal': unset($f_list['user']); break;
+                default: break;
+            }
+        }
 		return self::natcasesort($f_list);
 	}
 
@@ -905,16 +906,13 @@ class Profiler
 		$start = $line<$surrounder ? 0 : $line-$surrounder;
 		$end = $line+$surrounder;
 		$out = '';
-		foreach( $lines as $k => $_line ) 
-		{
+		foreach( $lines as $k => $_line ) {
 			if ($k>$end ) { break; }
 			$_line = self::cleanCode($_line);
-			if ($k<$start && !empty($fct) && preg_match('/function( )*'.preg_quote($fct).'/', $_line)) 
-			{
+			if ($k<$start && !empty($fct) && preg_match('/function( )*'.preg_quote($fct).'/', $_line)) {
 				$start = $k;
 			}
-			if ($k>=$start)
-			{
+			if ($k>=$start) {
 				if ($k!=$line) {
 					$out .= sprintf(self::mask_source_highlighted_item, self::cleanCode($_line));
 				} else {
@@ -937,8 +935,7 @@ class Profiler
 	{
 		$traces = self::buildTraces($traces);
 		if (empty($item['file']) || empty($item['line'])) return $traces;
-		foreach($traces as $_i=>$_trace) 
-		{
+		foreach($traces as $_i=>$_trace) {
 			if (
 				(!empty($_trace['file']) && $_trace['file']==$item['file']) &&
 				(!empty($_trace['line']) && $_trace['line']==$item['line'])
@@ -956,8 +953,8 @@ class Profiler
 	public static function getNewDomId($slug)
 	{
 		$id = $slug.'_';
-		while( $id==$slug.'_' && false!==array_search($_id, self::$dom_ids) ) 
-		{
+		$_id = $id.rand(10,100);
+		while (false!==array_search($_id, self::$dom_ids)) {
 			$_id = $id.rand(10,100);
 		}
 		self::$dom_ids[$slug] = $_id;

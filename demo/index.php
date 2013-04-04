@@ -1,24 +1,54 @@
 <?php
 
 // show errors at least initially
-@ini_set('display_errors','1'); @error_reporting(E_ALL ^ E_NOTICE);
+@ini_set('display_errors','1'); @error_reporting(E_ALL);
 
 // set a default timezone to avoid PHP5 warnings
 $dtmz = date_default_timezone_get();
 date_default_timezone_set( !empty($dtmz) ? $dtmz:'Europe/Paris' );
 
 // for security
-function _getSecuredRealPath( $str )
+function _getSecuredRealPath($str, $skip_turns =2)
 {
     $parts = explode('/', realpath('.'));
-    array_pop($parts);
-    array_pop($parts);
+    for ($i=0; $i<$skip_turns; $i++) {
+        array_pop($parts);
+    }
     return str_replace(join('/', $parts), '/[***]', $str);
 }
 
 function getPhpClassManualLink( $class_name, $ln='en' )
 {
     return sprintf('http://php.net/manual/%s/class.%s.php', $ln, strtolower($class_name));
+}
+
+require_once __DIR__."/../vendor/autoload.php";
+ini_set('display_errors','1');
+error_reporting(E_ALL);
+define('_DEVDEBUG_ERROR_HANDLER', true); // false by default
+define('_DEVDEBUG_EXCEPTION_HANDLER', true); // false by default
+define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
+define('_DEVDEBUG_SHUTDOWN_CALLBACK', "your callback"); // empty by default
+//use DevDebug\Aliases;
+require_once __DIR__."/../src/aliases.php";
+
+if (!empty($_GET['test'])) {
+    switch ($_GET['test']) {
+        case 'exception':
+            try{
+                if (2 != 4) // false
+                    throw new DevDebug\Exception("Catching default exception ...", 12);
+            } catch(DevDebug\Exception $e) {
+                echo $e;
+            }
+            break;
+        case 'error':
+            trigger_error('A test warning sent with "trigger_error"', E_USER_WARNING);
+            @fopen(); // error not written
+            new AZERT; // error
+            break;
+        default:break;
+    }
 }
 
 ?><!DOCTYPE html>
@@ -56,6 +86,8 @@ function getPhpClassManualLink( $class_name, $ln='en' )
 		<h2>Map of the package</h2>
         <ul id="navigation_menu" class="menu" role="navigation">
             <li><a href="index.php">Homepage</a><ul>
+                <li><a href="index.php?test=exception">Exception</a></li>
+                <li><a href="index.php?test=error">Error</a></li>
             </ul></li>
         </ul>
 
@@ -88,15 +120,10 @@ echo 'require_once ".../src/SplClassLoader.php"; // if required, a copy is propo
 echo '$classLoader = new SplClassLoader("DevDebug", "/path/to/package/src");'."\n";
 echo '$classLoader->register();';
 
-require_once __DIR__."/../vendor/autoload.php";
 ?>
     </pre>
 <?php
 
-define('_DEVDEBUG_ERROR_HANDLER', true); // false by default
-define('_DEVDEBUG_EXCEPTION_HANDLER', true); // false by default
-define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
-use DevDebug\Aliases;
 //require_once __DIR__."/../src/aliases.php";
 
 
