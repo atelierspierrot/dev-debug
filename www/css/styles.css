@@ -23,4 +23,3 @@ table.profiler_table td { vertical-align: top; }
 .debugger li.source_line { margin: 4px 6px; }
 .debugger li.source_line code { color:#404040; font-size: inherit; line-height: inherit;border: none;background: none; }
 .debugger li.source_line.on code { color:#404040; background-color:yellow; }
-

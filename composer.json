@@ -28,6 +28,7 @@
     "autoload": { "psr-0": {  "DevDebug": "src" } },
     "extra": {
         "assets": "www",
+        "assets_vendor": "vendor",
         "views_aliases": "src/DevDebug/ViewAliases.php"
     },
     "scripts": {

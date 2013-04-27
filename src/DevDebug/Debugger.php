@@ -206,7 +206,7 @@ class Debugger
                     ->setToView('setIncludePath', __DIR__.'/views' )
                     ->guessFromAssetsLoader(new AssetsLoader(
                         __DIR__.'/../../',
-                        __DIR__.'/../../www',
+                        'www',
                         defined('_DEVDEBUG_DOCUMENT_ROOT') ? _DEVDEBUG_DOCUMENT_ROOT : __DIR__.'/../../www'
                     ));
 	    	} catch(\Exception $e) {
