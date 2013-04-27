@@ -60,7 +60,7 @@ class Profiler
 	const mask_source_highlighted_item = '<li class="source_line"><code>%s</code></li>';
 	const mask_source_highlighted_item_on = '<li class="source_line on"><code>%s</code></li>';
 	const mask_table_line = '<tr>%s</tr>';
-	const mask_table_wrapper = '<table class="table_values"><caption>%s</caption><thead>%s</thead><tbody>%s</tbody></table>';
+	const mask_table_wrapper = '<table class="table_values tablesorter"><caption>%s</caption><thead>%s</thead><tbody>%s</tbody></table>';
 	const mask_table_head_cell = '<th>%s</th>';
 	const mask_table_content_cell = '<td>%s</td>';
 	const mask_a_link = '<a href="%1$s" title="Go to %1$s">%1$s</a>';
@@ -644,7 +644,7 @@ class Profiler
 			foreach($item['value'] as $_k=>$subitem) 
 			{
 				$sub_item_built = self::buildArguments( $subitem );
-				$items_built[$_k] = self::formatParam( $sub_item_built[1], $_k, $format );
+				$items_built[$_k] = self::formatParam( @$sub_item_built[1], $_k, $format );
 			}
 			$param_str .= implode(', ', $items_built).')';
 
@@ -705,8 +705,8 @@ class Profiler
 	public static function formatPath($path, $format = 'html', $skip_turns = 2)
 	{
 	    $root_dir = self::getRootDir();
-		$rootdir_info = $format=='html' ? sprintf(self::mask_abbr, $root_dir, '_ROOTDIR').'/' : '_ROOTDIR/';
-		return str_replace($root_dir, $rootdir_info, $path);
+		$rootdir_info = $format=='html' ? sprintf(self::mask_abbr, $root_dir.'/', '_ROOTDIR').'/' : '_ROOTDIR/';
+		return str_replace($root_dir.'/', $rootdir_info, $path);
 	}
 
 	/**
@@ -733,7 +733,7 @@ class Profiler
 	 */
 	public static function getRootHttp()
 	{
-		return defined('_ROOTHTTP') ? _ROOTHTTP : Url::getCurrentUrl(false, true);
+		return defined('_ROOTHTTP') ? _ROOTHTTP : Url::getRequestUrl(false, true);
 	}
 
 // ----------------------------------

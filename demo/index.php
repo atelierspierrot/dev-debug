@@ -27,10 +27,13 @@ ini_set('display_errors','1');
 error_reporting(E_ALL);
 define('_DEVDEBUG_ERROR_HANDLER', true); // false by default
 define('_DEVDEBUG_EXCEPTION_HANDLER', true); // false by default
-define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
+//define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
 define('_DEVDEBUG_SHUTDOWN_CALLBACK', "your callback"); // empty by default
+define('_DEVDEBUG_DOCUMENT_ROOT', __DIR__);
 //use DevDebug\Aliases;
 require_once __DIR__."/../src/aliases.php";
+
+$arg_ln = isset($_GET['ln']) ? $_GET['ln'] : 'en';
 
 if (!empty($_GET['test'])) {
     switch ($_GET['test']) {
@@ -85,10 +88,9 @@ if (!empty($_GET['test'])) {
 	<nav>
 		<h2>Map of the package</h2>
         <ul id="navigation_menu" class="menu" role="navigation">
-            <li><a href="index.php">Homepage</a><ul>
-                <li><a href="index.php?test=exception">Exception</a></li>
-                <li><a href="index.php?test=error">Error</a></li>
-            </ul></li>
+            <li><a href="index.php">Homepage</a></li>
+            <li><a href="index.php?test=exception">Test an Exception</a></li>
+            <li><a href="index.php?test=error">Test an Error</a></li>
         </ul>
 
         <div class="info">
@@ -108,7 +110,7 @@ if (!empty($_GET['test'])) {
     <p>For clarity, the examples below are NOT written as a working PHP code when it seems not necessary. For example, rather than write <var>echo "my_string";</var> we would write <var>echo my_string</var> or rather than <var>var_export($data);</var> we would write <var>echo $data</var>. The main code for these classes'usage is written strictly.</p>
     <p>As a reminder, and because it's always useful, have a look at the <a href="http://pear.php.net/manual/<?php echo $arg_ln; ?>/standards.php">PHP common coding standards</a>.</p>
 
-	<h2 id="tests">Tests & documentation</h2>
+	<h2 id="tests">How-to</h2>
     
 <h3>Include the <var>DevDebug</var> namespace</h3>
 
@@ -119,33 +121,23 @@ if (!empty($_GET['test'])) {
 echo 'require_once ".../src/SplClassLoader.php"; // if required, a copy is proposed in the package'."\n";
 echo '$classLoader = new SplClassLoader("DevDebug", "/path/to/package/src");'."\n";
 echo '$classLoader->register();';
-
 ?>
     </pre>
+
+<h3>Add the <var>DevDebug aliases</var> to your project</h3>
+
+    <pre class="code" data-language="php">
 <?php
-
-//require_once __DIR__."/../src/aliases.php";
-
-
-
-//trigger_error('qmlskdjfmqlksj', E_USER_WARNING);
-//trigger_error('qmlskdjfmqlksj2', E_USER_WARNING);
-//			@fopen(); // error not written
-//			fopen(); // error
-
-		try{
-//			fopen(); // error
-			if (2 != 4) // false
-				throw new DevDebug\Exception("Capture l'exception par défaut", 12);
-		} catch(DevDebug\Exception $e) {
-			echo $e;
-		}
-
-//trigger_error('qmlskdjfmqlksj', E_USER_ERROR);
-
-		trigger_error('Test error string', E_USER_ERROR);
-
+echo 'ini_set("display_errors","1");'."\n";
+echo 'error_reporting(E_ALL);'."\n";
+echo 'define("_DEVDEBUG_ERROR_HANDLER", true); // false by default'."\n";
+echo 'define("_DEVDEBUG_EXCEPTION_HANDLER", true); // false by default'."\n";
+echo 'define("_DEVDEBUG_SHUTDOWN_HANDLER", true); // false by default'."\n";
+echo 'define("_DEVDEBUG_SHUTDOWN_CALLBACK", "your callback"); // empty by default'."\n";
+echo 'define("_DEVDEBUG_DOCUMENT_ROOT", __DIR__);'."\n";
+echo 'require_once __DIR__."/../src/aliases.php";'."\n";
 ?>
+    </pre>
 
         </article>
     </div>
@@ -155,7 +147,7 @@ echo '$classLoader->register();';
 		    This page is <a href="" title="Check now online" id="html_validation">HTML5</a> & <a href="" title="Check now online" id="css_validation">CSS3</a> valid.
 		</div>
 		<div class="credits float-right">
-		    <a href="https://github.com/atelierspierrot/internationalization">atelierspierrot/internationalization</a> package by <a href="https://github.com/PieroWbmstr">Piero Wbmstr</a> under <a href="http://opensource.org/licenses/GPL-3.0">GNU GPL v.3</a> license.
+		    <a href="https://github.com/atelierspierrot/devdebug">atelierspierrot/devdebug</a> package by <a href="https://github.com/PieroWbmstr">Piero Wbmstr</a> under <a href="http://opensource.org/licenses/GPL-3.0">GNU GPL v.3</a> license.
 		</div>
     </footer>
 

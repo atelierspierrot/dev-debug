@@ -9,7 +9,7 @@
 
 namespace DevDebug;
 
-use \ErrorException as InternalErrorException;
+use \ErrorException as StandardErrorException;
 
 use Library\Helper\Url;
 
@@ -22,7 +22,7 @@ use Library\Helper\Url;
  *
  * @author 		Piero Wbmstr <piero.wbmstr@gmail.com>
  */
-class ErrorException extends InternalErrorException
+class ErrorException extends StandardErrorException
 {
 
 	/**
@@ -141,7 +141,7 @@ class ErrorException extends InternalErrorException
 		$this->infos['traces'] = Profiler::getHighlightedTraces($this->getTrace(), $this->infos);
 		$this->debugger =& Debugger::getInstance();
 		$this->debugger->addStack('message', $this->infos);
-		$this->debugger->setDebuggerTitle( self::_buildExceptionStr(true), Url::getCurrentUrl() );
+		$this->debugger->setDebuggerTitle( self::_buildExceptionStr(true), Url::getRequestUrl() );
 		return false;
 	}
 
@@ -150,9 +150,7 @@ class ErrorException extends InternalErrorException
 	 */
 	public function __toString() 
 	{
-        return $this->debugger."\n"
-            .'<pre>'.trim(stripslashes(print_r($this->infos['traces'],1)), "\"'\n ").'</pre>'."\n"
-            .$this->infos['source'];
+        return $this->debugger->__toString();
 	}
   
 	/**

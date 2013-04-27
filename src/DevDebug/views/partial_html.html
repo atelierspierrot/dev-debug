@@ -1,5 +1,26 @@
 <?php
 if (empty($debug) || empty($reporter)) return '';
+
+// ------------------
+// JS in footer
+$_template->getTemplateObject('JavascriptFile', 'jsfiles_footer')
+	->add($_template->getAssetsLoader()->getAssetsWebPath().'/js/scripts.js');
+
+// ------------------
+// CSS
+$_template->getTemplateObject('CssFile')
+	->add($_template->getAssetsLoader()->getAssetsWebPath().'/css/styles.css');
+
+_use('jquery.tablesorter');
+$_template->getTemplateObject('JavascriptTag')->add(<<<EOT
+$(function() {
+    $('.tablesorter').tablesorter({ 
+        widgets: ['zebra'] 
+    });
+});
+EOT
+);
+
 ?>
 
 <style type="text/css">
@@ -10,6 +31,6 @@ if (empty($debug) || empty($reporter)) return '';
 <?php @include $script_filepath; ?>
 </script>
 
-<?php @include $profiler_content_filepath; ?>
+<?php _render($profiler_content); ?>
 
-<?php @include $profiler_footer_filepath; ?>
+<?php _render($profiler_footer); ?>

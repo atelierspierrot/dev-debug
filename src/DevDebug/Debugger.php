@@ -9,6 +9,9 @@
 
 namespace DevDebug;
 
+use TemplateEngine\TemplateEngine;
+use Assets\Loader as AssetsLoader;
+
 /**
  * Debug functions library
  *
@@ -92,7 +95,7 @@ class Debugger
 	  	array( 'title'=>'Server Parameters', 'type'=>'serverParams' ), 
 	  	array( 'title'=>'Session Attributes', 'type'=>'session' ), 
 	  	array( 'title'=>'Defined Constants', 'type'=>'constants' ), 
-	  	array( 'title'=>'Request Headers', 'type'=>'headers' ), 
+	  	array( 'title'=>'Request', 'type'=>'headers' ), 
 	  	array( 'title'=>'System Environment', 'type'=>'system' ), 
  	);
 	static $debugger_arguments = array(
@@ -196,6 +199,53 @@ class Debugger
 			}
 			return var_export($this->entity,1);
 		} else {
+
+            $template_engine = TemplateEngine::getInstance();
+            try {
+                $template_engine
+                    ->setToView('setIncludePath', __DIR__.'/views' )
+                    ->guessFromAssetsLoader(new AssetsLoader(
+                        __DIR__.'/../../',
+                        __DIR__.'/../../www',
+                        defined('_DEVDEBUG_DOCUMENT_ROOT') ? _DEVDEBUG_DOCUMENT_ROOT : __DIR__.'/../../www'
+                    ));
+	    	} catch(\Exception $e) {
+	    	    return $e->getMessage();
+	    	}
+            $template_engine->getTemplateObject('MetaTag')
+                ->add('robots', 'none');
+
+            $params = array(
+                'debug' => $this,
+                'reporter' => $template_engine,
+                'title' =>'The system encountered an error!',
+                'subheader' =>$this->profiler->renderProfilingTitle(),
+                'slogan' =>$this->profiler->renderProfilingInfo(),
+                'profiler_content' => 'profiler_content.html',
+                'profiler_footer' => 'profiler_footer.html',
+                'show_menu' => false,
+                'show_backtotop_handlers' => false
+            );
+			// messages ?
+			if (!empty($this->messages)) {
+				$params['messages'] = self::renderMessages( $this->messages, !empty($this->format) ? $this->format : $format );
+			}
+			// others
+			$params['stacks'] = array();
+			$params['menu'] = array();
+			foreach(self::getStacks() as $_i=>$_stack) {
+    			$params['menu'][$_stack->getTitle()] = '#'.$_i;
+				$params['stacks'][] = self::renderStack( $_stack, !empty($this->format) ? $this->format : $format );
+			}
+
+            // this will display the layout on screen and exit
+            try {
+	    	    $params['content'] = $template_engine->render('partial_html.html', $params);
+	    	    $str = $template_engine->renderLayout(null, $params);
+	    	} catch(\Exception $e) {
+	    	    return $e->getMessage();
+	    	}
+/*
 			$str='';
 			// messages ?
 			if (!empty($this->messages)) {
@@ -205,6 +255,7 @@ class Debugger
 			foreach(self::getStacks() as $_stack) {
 				$str .= self::renderStack( $_stack, !empty($this->format) ? $this->format : $format );
 			}
+*/
 			return $str;
 		}
 		return '';

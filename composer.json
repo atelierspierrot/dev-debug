@@ -6,15 +6,31 @@
     "homepage": "https://github.com/atelierspierrot/devdebug",
     "version": "1.0.0-dev",
     "license": "GPL-3.0",
-    "authors": [{
+    "authors": [
+        {
+            "name": "Les Ateliers Pierrot & contributors",
+            "email": "contact@ateliers-pierrot.fr",
+            "homepage": "http://www.ateliers-pierrot.fr/"
+        },{
             "name": "Pierre Cassat",
             "email": "piero.wbmstr@gmail.com",
             "homepage": "https://github.com/PieroWbmstr"
-    }],
+        }
+    ],
     "require": {
         "php": ">=5.3.0",
-        "atelierspierrot/library": "dev-master"
+        "psr/log": "dev-master",
+        "atelierspierrot/patterns": "dev-master",
+        "atelierspierrot/library": "dev-master",
+        "atelierspierrot/templatengine": "dev-master"
     },
     "require-dev": { "sami/sami": "dev-master" },
-    "autoload": { "psr-0": {  "DevDebug": "src" } }
+    "autoload": { "psr-0": {  "DevDebug": "src" } },
+    "extra": {
+        "assets": "www",
+        "views_aliases": "src/DevDebug/ViewAliases.php"
+    },
+    "scripts": {
+        "post-autoload-dump": "Assets\\ComposerInstaller::postAutoloadDump"
+    }
 }

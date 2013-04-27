@@ -1,0 +1,26 @@
+/* Profiler */
+.profiler {float:right;font-size: .86em;margin:0; padding:0;}
+#profiler { text-align: right; }
+#profiler li { list-style-type: none; }
+table.profiler_table td { vertical-align: top; }
+.profiler_handler { float: right; }
+
+/* Debug */
+.debugger { font-family: Arial, Helvetica, sans-serif; }
+.back_link { font-size: .8em; }
+.debugger .debug_message { 
+	margin: 1em 3em; border: 2px solid red; padding: 1em; 
+	-moz-border-radius: 6px; -webkit-border-radius: 6px;
+}
+.debugger .error_types_group { margin-bottom: 1em; }
+.debugger li.php_trace_item { letter-spacing: .5pt; }
+.debugger li.php_trace_item.on { color:red; background-color: #ffcccc; }
+.debugger .linker { font-size: .8em; }
+.debugger abbr { cursor: help; padding: 0 2px; }
+.debugger abbr:hover { color: #fff; background: #ccc; }
+.debugger code { color:#404040; }
+.debugger .source_code { border: 1px solid #ccc; clear: left; padding: 12px; margin: 4px; font-size: .8em; line-height: .9em; }
+.debugger li.source_line { margin: 4px 6px; }
+.debugger li.source_line code { color:#404040; font-size: inherit; line-height: inherit;border: none;background: none; }
+.debugger li.source_line.on code { color:#404040; background-color:yellow; }
+

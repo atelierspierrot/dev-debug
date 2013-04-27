@@ -13,6 +13,7 @@ define('_DEVDEBUG_ERROR_HANDLER', true); // false by default
 define('_DEVDEBUG_EXCEPTION_HANDLER', true); // false by default
 define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
 #define('_DEVDEBUG_SHUTDOWN_CALLBACK', "your callback"); // empty by default
+define('_DEVDEBUG_DOCUMENT_ROOT', __DIR__);
 */
 
 // the internal errors & exceptions handlers
@@ -47,6 +48,7 @@ if (!@function_exists('devdebugErrorHandler'))
         if (!(error_reporting() & $errno)) return false;
         $e = new DevDebug\ErrorException($errstr, $errno, $errno, $errfile, $errline);
         echo $e;
+        exit;
     }
 
     if (defined('_DEVDEBUG_ERROR_HANDLER') && true===_DEVDEBUG_ERROR_HANDLER) {
@@ -67,6 +69,7 @@ if (!@function_exists('devdebugExceptionHandler'))
         if (0===error_reporting()) return false;
         $e = new DevDebug\Exception($e->getMessage(), $e->getCode(), $e->getPrevious());
         echo $e;
+        exit;
     }
 
     if (defined('_DEVDEBUG_EXCEPTION_HANDLER') && true===_DEVDEBUG_EXCEPTION_HANDLER) {

@@ -29,3 +29,9 @@ vendor/*
 # for development ...
 tmp/*
 dev/*
+
+# packages assets
+!www/
+www/*
+!www/css/
+!www/js/
