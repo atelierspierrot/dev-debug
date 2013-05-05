@@ -22,16 +22,14 @@
         "psr/log": "dev-master",
         "atelierspierrot/patterns": "dev-master",
         "atelierspierrot/library": "dev-master",
+        "atelierspierrot/assets-manager": "dev-master",
         "atelierspierrot/templatengine": "dev-master"
     },
     "require-dev": { "sami/sami": "dev-master" },
     "autoload": { "psr-0": {  "DevDebug": "src" } },
     "extra": {
-        "assets": "www",
-        "assets_vendor": "vendor",
-        "views_aliases": "src/DevDebug/ViewAliases.php"
+        "assets-dir": "www",
+        "assets-vendor-dir": "vendor"
     },
-    "scripts": {
-        "post-autoload-dump": "Assets\\ComposerInstaller::postAutoloadDump"
-    }
+    "scripts": { "post-autoload-dump": "Assets\\Composer\\TemplateEngineInstaller::postAutoloadDump" }
 }

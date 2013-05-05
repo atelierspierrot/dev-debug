@@ -204,7 +204,7 @@ class Debugger
             try {
                 $template_engine
                     ->setToView('setIncludePath', __DIR__.'/views' )
-                    ->guessFromAssetsLoader(new AssetsLoader(
+                    ->guessFromAssetsLoader(AssetsLoader::getInstance(
                         __DIR__.'/../../',
                         'www',
                         defined('_DEVDEBUG_DOCUMENT_ROOT') ? _DEVDEBUG_DOCUMENT_ROOT : __DIR__.'/../../www'
