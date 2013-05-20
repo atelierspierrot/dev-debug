@@ -30,14 +30,13 @@ define('_DEVDEBUG_EXCEPTION_HANDLER', true); // false by default
 //define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
 define('_DEVDEBUG_SHUTDOWN_CALLBACK', "your callback"); // empty by default
 define('_DEVDEBUG_DOCUMENT_ROOT', __DIR__);
-//use DevDebug\Aliases;
-require_once __DIR__."/../src/aliases.php";
 
 $arg_ln = isset($_GET['ln']) ? $_GET['ln'] : 'en';
 
 if (!empty($_GET['test'])) {
     switch ($_GET['test']) {
         case 'exception':
+            require_once __DIR__."/../src/aliases.php";
             try{
                 if (2 != 4) // false
                     throw new DevDebug\Exception("Catching default exception ...", 12);
@@ -46,6 +45,25 @@ if (!empty($_GET['test'])) {
             }
             break;
         case 'error':
+            require_once __DIR__."/../src/aliases.php";
+            trigger_error('A test warning sent with "trigger_error"', E_USER_WARNING);
+            @fopen(); // error not written
+            new AZERT; // error
+            break;
+        case 'te_exception':
+//            $dbg = DevDebug\Debugger::initInstance('DevDebug\TemplateEngineDebugger');
+            define('_DEVDEBUG_DEBUGGER_CLASS', 'DevDebug\TemplateEngineDebugger'); // empty by default
+            require_once __DIR__."/../src/aliases.php";
+            try{
+                if (2 != 4) // false
+                    throw new DevDebug\Exception("Catching default exception ...", 12);
+            } catch(DevDebug\Exception $e) {
+                echo $e;
+            }
+            break;
+        case 'te_error':
+            define('_DEVDEBUG_DEBUGGER_CLASS', 'DevDebug\TemplateEngineDebugger'); // empty by default
+            require_once __DIR__."/../src/aliases.php";
             trigger_error('A test warning sent with "trigger_error"', E_USER_WARNING);
             @fopen(); // error not written
             new AZERT; // error
@@ -91,6 +109,8 @@ if (!empty($_GET['test'])) {
             <li><a href="index.php">Homepage</a></li>
             <li><a href="index.php?test=exception">Test an Exception</a></li>
             <li><a href="index.php?test=error">Test an Error</a></li>
+            <li><a href="index.php?test=te_exception">Test an Exception with the TemplateEngine</a></li>
+            <li><a href="index.php?test=te_error">Test an Error with the TemplateEngine</a></li>
         </ul>
 
         <div class="info">

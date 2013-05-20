@@ -94,7 +94,6 @@ class Exception extends StandardException
 	 */
 	public function __toString() 
 	{
-        return $this->debugger;
         return $this->debugger->__toString();
 	}
 	

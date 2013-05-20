@@ -339,10 +339,11 @@ class Profiler
 		return $built_args;
 	}
 
-	public static function buildClassInfo($classname)
+	public static function buildClassInfo($classname, $is_interface = false)
 	{
 		$built_class = array( 'name'=>$classname );
-		if (!class_exists($classname)) return $built_class;
+		if (false===$is_interface && !class_exists($classname)) return $built_class;
+		if (true===$is_interface && !interface_exists($classname)) return $built_class;
 
 		$clsReflect = new \ReflectionClass($classname);
 		$built_class['name'] = $clsReflect->getShortName();
@@ -359,7 +360,7 @@ class Profiler
 		if (count($interfaces)) {
 			$built_class['interfaces'] = array();
 			foreach($interfaces as $interface) {
-				$built_class['interfaces'][] = self::buildClassInfo($interface);
+				$built_class['interfaces'][] = self::buildClassInfo($interface, true);
 			}
 		}
 		return $built_class;		
@@ -555,9 +556,11 @@ class Profiler
 			$call_info = sprintf(self::mask_abbr, 
 				self::formatClassName($cls_info, 'txt'), $parts[0]).$jointure.$parts[1];
 		}
-		$item_str_call_info .= !empty($call_info) ? sprintf(self::mask_trace_item_call_info, 
-			$call_info, implode(', ', $params)			
-		) : '';
+		if (!empty($params)) {
+            $item_str_call_info .= !empty($call_info) ? sprintf(self::mask_trace_item_call_info, 
+                $call_info, implode(', ', $params)			
+            ) : '';
+        }
 
 		$item_str_position_info = !empty($item['line']) ? 
 			sprintf(self::mask_trace_item_position_info,

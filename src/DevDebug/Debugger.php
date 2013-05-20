@@ -9,9 +9,6 @@
 
 namespace DevDebug;
 
-use TemplateEngine\TemplateEngine;
-use Assets\Loader as AssetsLoader;
-
 /**
  * Debug functions library
  *
@@ -110,23 +107,42 @@ class Debugger
 	protected $entity;
 	protected $title;
 
-	private function __construct()
+	protected function __construct()
 	{
 		$this->stacks = array();
 		$this->messages = array();
 	}
 
-	private function init()
+	protected function init()
 	{
 		$this->profiler = new Profiler( $this );
 		self::setStacks( self::$default_stacks );
 	}
-	
-	public static function getInstance()
+
+    /**
+     * Get/set a debugger instance to use
+     *
+     * This allows to use another class extending this Debugger original one.
+     *
+     * @param string $debugger_class Object class name that must extend `DevDebug\Debugger`
+     * @throws InvalidArgumentException if the argument does not extend class `DevDebug\Debugger`
+     */	
+	public static function getInstance($debugger_class = null)
 	{
         if (!isset(self::$instance) || !is_object(self::$instance)) {
-            self::$instance = new Debugger;
-            self::$instance->init();
+            if (is_null($debugger_class)) $debugger_class = __CLASS__;
+            if ($debugger_class===__CLASS__ || is_subclass_of($debugger_class, __CLASS__)) {
+                self::$instance = new $debugger_class;
+                self::$instance->init();
+            } else {
+                $cls_name = __CLASS__;
+                self::$instance = new $cls_name;
+                self::$instance->init();
+                throw new \InvalidArgumentException(
+                    sprintf('Debugger object must at least extend the original class "%s" (got class "%s")!',
+                        __CLASS__, $debugger_class)
+                );
+            }
         }
         return self::$instance;
 	}
@@ -199,53 +215,6 @@ class Debugger
 			}
 			return var_export($this->entity,1);
 		} else {
-
-            $template_engine = TemplateEngine::getInstance();
-            try {
-                $template_engine
-                    ->setToView('setIncludePath', __DIR__.'/views' )
-                    ->guessFromAssetsLoader(AssetsLoader::getInstance(
-                        __DIR__.'/../../',
-                        'www',
-                        defined('_DEVDEBUG_DOCUMENT_ROOT') ? _DEVDEBUG_DOCUMENT_ROOT : __DIR__.'/../../www'
-                    ));
-	    	} catch(\Exception $e) {
-	    	    return $e->getMessage();
-	    	}
-            $template_engine->getTemplateObject('MetaTag')
-                ->add('robots', 'none');
-
-            $params = array(
-                'debug' => $this,
-                'reporter' => $template_engine,
-                'title' =>'The system encountered an error!',
-                'subheader' =>$this->profiler->renderProfilingTitle(),
-                'slogan' =>$this->profiler->renderProfilingInfo(),
-                'profiler_content' => 'profiler_content.html',
-                'profiler_footer' => 'profiler_footer.html',
-                'show_menu' => false,
-                'show_backtotop_handlers' => false
-            );
-			// messages ?
-			if (!empty($this->messages)) {
-				$params['messages'] = self::renderMessages( $this->messages, !empty($this->format) ? $this->format : $format );
-			}
-			// others
-			$params['stacks'] = array();
-			$params['menu'] = array();
-			foreach(self::getStacks() as $_i=>$_stack) {
-    			$params['menu'][$_stack->getTitle()] = '#'.$_i;
-				$params['stacks'][] = self::renderStack( $_stack, !empty($this->format) ? $this->format : $format );
-			}
-
-            // this will display the layout on screen and exit
-            try {
-	    	    $params['content'] = $template_engine->render('partial_html.html', $params);
-	    	    $str = $template_engine->renderLayout(null, $params);
-	    	} catch(\Exception $e) {
-	    	    return $e->getMessage();
-	    	}
-/*
 			$str='';
 			// messages ?
 			if (!empty($this->messages)) {
@@ -255,7 +224,6 @@ class Debugger
 			foreach(self::getStacks() as $_stack) {
 				$str .= self::renderStack( $_stack, !empty($this->format) ? $this->format : $format );
 			}
-*/
 			return $str;
 		}
 		return '';

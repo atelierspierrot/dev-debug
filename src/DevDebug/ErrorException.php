@@ -150,7 +150,12 @@ class ErrorException extends StandardErrorException
 	 */
 	public function __toString() 
 	{
-        return $this->debugger->__toString();
+	    if (true===$this->exit) {
+            echo $this->debugger->__toString();
+            exit;
+	    } else {
+            return $this->debugger->__toString();
+        }
 	}
   
 	/**

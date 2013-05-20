@@ -13,11 +13,14 @@ define('_DEVDEBUG_ERROR_HANDLER', true); // false by default
 define('_DEVDEBUG_EXCEPTION_HANDLER', true); // false by default
 define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
 #define('_DEVDEBUG_SHUTDOWN_CALLBACK', "your callback"); // empty by default
+define('_DEVDEBUG_DEBUGGER_CLASS', 'DevDebug\TemplateEngineDebugger'); // empty by default
 define('_DEVDEBUG_DOCUMENT_ROOT', __DIR__);
 */
 
 // the internal errors & exceptions handlers
-$abcdefghijklmnopqrstuvwxyz = DevDebug\Debugger::getInstance();
+$abcdefghijklmnopqrstuvwxyz = DevDebug\Debugger::getInstance(
+    defined('_DEVDEBUG_DEBUGGER_CLASS') ? _DEVDEBUG_DEBUGGER_CLASS : null
+);
 
 if (!@function_exists('devdebugShutdownHandler'))
 {
