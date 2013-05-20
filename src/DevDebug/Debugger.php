@@ -158,7 +158,7 @@ class Debugger
 		}
 	}
 
-	private static $shutdown=false;
+	protected static $shutdown=false;
 
 	public static function shutdown($exit = false, $callback = null)
 	{
