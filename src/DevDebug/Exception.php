@@ -84,7 +84,7 @@ class Exception extends StandardException
 			'source' => Profiler::getHighlightedSource($this->getFile(), $this->getLine()),
 		);
 		$this->infos['traces'] = Profiler::getHighlightedTraces($this->getTrace(), $this->infos);
-		$this->debugger =& Debugger::getInstance();
+		$this->debugger = Debugger::getInstance();
 		$this->debugger->addStack('message', $this->infos);
 		$this->debugger->setDebuggerTitle( self::_buildExceptionStr(true), Url::getRequestUrl() );
 	}
@@ -94,7 +94,12 @@ class Exception extends StandardException
 	 */
 	public function __toString() 
 	{
-        return $this->debugger->__toString();
+        if (defined('_DEVDEBUG_SHUTDOWN_HANDLER') && true===_DEVDEBUG_SHUTDOWN_HANDLER) {
+            return '';
+        } else {
+            echo $this->debugger->__toString();
+            exit;
+        }
 	}
 	
 	/**

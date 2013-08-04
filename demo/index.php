@@ -1,11 +1,21 @@
 <?php
 
-// show errors at least initially
-@ini_set('display_errors','1'); @error_reporting(E_ALL);
+/**
+ * Show errors at least initially
+ *
+ * `E_ALL` => for hard dev
+ * `E_ALL & ~E_STRICT` => for hard dev in PHP5.4 avoiding strict warnings
+ * `E_ALL & ~E_NOTICE & ~E_STRICT` => classic setting
+ */
+//@ini_set('display_errors','1'); @error_reporting(E_ALL);
+//@ini_set('display_errors','1'); @error_reporting(E_ALL & ~E_STRICT);
+@ini_set('display_errors','1'); @error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
 
-// set a default timezone to avoid PHP5 warnings
-$dtmz = date_default_timezone_get();
-date_default_timezone_set( !empty($dtmz) ? $dtmz:'Europe/Paris' );
+/**
+ * Set a default timezone to avoid PHP5 warnings
+ */
+$dtmz = @date_default_timezone_get();
+date_default_timezone_set($dtmz?:'Europe/Paris');
 
 // for security
 function _getSecuredRealPath($str, $skip_turns =2)
@@ -22,31 +32,40 @@ function getPhpClassManualLink( $class_name, $ln='en' )
     return sprintf('http://php.net/manual/%s/class.%s.php', $ln, strtolower($class_name));
 }
 
+function myShutdownCallback() {
+    echo 'ENTERING IN CUSTOM FUNCTION '.__FUNCTION__.' WITH ARGS '.var_export(func_get_args(),1);
+}
+
 require_once __DIR__."/../vendor/autoload.php";
 ini_set('display_errors','1');
 error_reporting(E_ALL);
 define('_DEVDEBUG_ERROR_HANDLER', true); // false by default
 define('_DEVDEBUG_EXCEPTION_HANDLER', true); // false by default
-//define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
-define('_DEVDEBUG_SHUTDOWN_CALLBACK', "your callback"); // empty by default
+define('_DEVDEBUG_SHUTDOWN_HANDLER', true); // false by default
+define('_DEVDEBUG_SHUTDOWN_CALLBACK', "myShutdownCallback"); // empty by default
 define('_DEVDEBUG_DOCUMENT_ROOT', __DIR__);
 
 $arg_ln = isset($_GET['ln']) ? $_GET['ln'] : 'en';
 
 if (!empty($_GET['test'])) {
     switch ($_GET['test']) {
+        case 'php_exception':
+            require_once __DIR__."/../src/aliases.php";
+            throw new \Exception("Catching default PHP exception with default DevDebug\Debugger ...");
+            break;
         case 'exception':
             require_once __DIR__."/../src/aliases.php";
             try{
                 if (2 != 4) // false
-                    throw new DevDebug\Exception("Catching default exception ...", 12);
+                    throw new DevDebug\Exception("Catching DevDebug\Exception with default DevDebug\Debugger...", 12);
             } catch(DevDebug\Exception $e) {
                 echo $e;
             }
             break;
         case 'error':
             require_once __DIR__."/../src/aliases.php";
-            trigger_error('A test warning sent with "trigger_error"', E_USER_WARNING);
+            trigger_error('A test notice sent with "trigger_error" with default DevDebug\Debugger', E_USER_NOTICE);
+            trigger_error('A test warning sent with "trigger_error" with default DevDebug\Debugger', E_USER_WARNING);
             @fopen(); // error not written
             new AZERT; // error
             break;
@@ -56,7 +75,7 @@ if (!empty($_GET['test'])) {
             require_once __DIR__."/../src/aliases.php";
             try{
                 if (2 != 4) // false
-                    throw new DevDebug\Exception("Catching default exception ...", 12);
+                    throw new DevDebug\Exception("Catching DevDebug\Exception with DevDebug\TemplateEngineDebugger ...", 12);
             } catch(DevDebug\Exception $e) {
                 echo $e;
             }
@@ -64,13 +83,14 @@ if (!empty($_GET['test'])) {
         case 'te_error':
             define('_DEVDEBUG_DEBUGGER_CLASS', 'DevDebug\TemplateEngineDebugger'); // empty by default
             require_once __DIR__."/../src/aliases.php";
-            trigger_error('A test warning sent with "trigger_error"', E_USER_WARNING);
+            trigger_error('A test warning sent with "trigger_error" with DevDebug\TemplateEngineDebugger', E_USER_WARNING);
             @fopen(); // error not written
             new AZERT; // error
             break;
         default:break;
     }
 }
+DevDebug\Debugger::shutdown(true);
 
 ?><!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -107,10 +127,11 @@ if (!empty($_GET['test'])) {
 		<h2>Map of the package</h2>
         <ul id="navigation_menu" class="menu" role="navigation">
             <li><a href="index.php">Homepage</a></li>
-            <li><a href="index.php?test=exception">Test an Exception</a></li>
-            <li><a href="index.php?test=error">Test an Error</a></li>
-            <li><a href="index.php?test=te_exception">Test an Exception with the TemplateEngine</a></li>
-            <li><a href="index.php?test=te_error">Test an Error with the TemplateEngine</a></li>
+            <li><a href="index.php?test=php_exception">PHP Exception</a></li>
+            <li><a href="index.php?test=exception">DevDebug\Exception</a></li>
+            <li><a href="index.php?test=error">Trigger Error</a></li>
+            <li><a href="index.php?test=te_exception">TemplateEngineException</a></li>
+            <li><a href="index.php?test=te_error">TemplateEngineError</a></li>
         </ul>
 
         <div class="info">
@@ -146,15 +167,24 @@ echo '$classLoader->register();';
 
 <h3>Add the <var>DevDebug aliases</var> to your project</h3>
 
+    <p>To use the library, you first need to define some required constants setting up how the library must handle errors or exceptions and if it must write them
+    on shutdown or at runtime. Then, you just have to include the <var>DevDebug/src/aliases.php</var> file ... that's it!</p>
+
     <pre class="code" data-language="php">
 <?php
+echo "// first set up PHP to handle errors:\n";
 echo 'ini_set("display_errors","1");'."\n";
 echo 'error_reporting(E_ALL);'."\n";
+echo "\n// then define requires constants:\n";
 echo 'define("_DEVDEBUG_ERROR_HANDLER", true); // false by default'."\n";
 echo 'define("_DEVDEBUG_EXCEPTION_HANDLER", true); // false by default'."\n";
 echo 'define("_DEVDEBUG_SHUTDOWN_HANDLER", true); // false by default'."\n";
 echo 'define("_DEVDEBUG_SHUTDOWN_CALLBACK", "your callback"); // empty by default'."\n";
+echo "\n// this allows you to use a custom `Debugger` class, which must extends the default `DevDebug\Debugger`:\n";
+echo 'define("_DEVDEBUG_DEBUGGER_CLASS", "DevDebug\TemplateEngineDebugger"); // empty by default'."\n";
+echo "\n// this is not required but can be useful for views assets:\n";
 echo 'define("_DEVDEBUG_DOCUMENT_ROOT", __DIR__);'."\n";
+echo "\n// then include the aliases:\n";
 echo 'require_once __DIR__."/../src/aliases.php";'."\n";
 ?>
     </pre>

@@ -139,7 +139,7 @@ class ErrorException extends StandardErrorException
 			'source' => Profiler::getHighlightedSource($this->getFile(), $this->getLine()),
 		);
 		$this->infos['traces'] = Profiler::getHighlightedTraces($this->getTrace(), $this->infos);
-		$this->debugger =& Debugger::getInstance();
+		$this->debugger = Debugger::getInstance();
 		$this->debugger->addStack('message', $this->infos);
 		$this->debugger->setDebuggerTitle( self::_buildExceptionStr(true), Url::getRequestUrl() );
 		return false;
@@ -150,11 +150,15 @@ class ErrorException extends StandardErrorException
 	 */
 	public function __toString() 
 	{
-	    if (true===$this->exit) {
-            echo $this->debugger->__toString();
-            exit;
-	    } else {
-            return $this->debugger->__toString();
+        if (defined('_DEVDEBUG_SHUTDOWN_HANDLER') && true===_DEVDEBUG_SHUTDOWN_HANDLER) {
+            return '';
+        } else {
+            if (true===$this->exit) {
+                echo $this->debugger->__toString();
+                exit;
+            } else {
+                return $this->debugger->__toString();
+            }
         }
 	}
   

@@ -26,7 +26,7 @@ class DebuggerItem
 
 	public function __construct($type = null, $entity = null, $title = null)
 	{
-		$debugger =& self::getDebugger();
+		$debugger = self::getDebugger();
 		self::setTitle( $title );
 		self::setType( $type );
 		self::setEntity( $entity );
@@ -34,7 +34,7 @@ class DebuggerItem
 
 	public function __toString()
 	{
-		$debugger =& self::getDebugger();
+		$debugger = self::getDebugger();
 		return $debugger->renderStack( $this );
 	}	
 
@@ -162,7 +162,7 @@ class Debugger
 
 	public static function shutdown($exit = false, $callback = null)
 	{
-    	$_this =& self::getInstance();
+    	$_this = self::getInstance();
 		if (Debugger::$shutdown===true) return true;
 		$_this->checkUri();
 
@@ -225,6 +225,7 @@ class Debugger
 				$str .= self::renderStack( $_stack, !empty($this->format) ? $this->format : $format );
 			}
 			return $str;
+			exit;
 		}
 		return '';
 	}

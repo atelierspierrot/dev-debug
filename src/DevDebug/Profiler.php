@@ -556,7 +556,7 @@ class Profiler
 			$call_info = sprintf(self::mask_abbr, 
 				self::formatClassName($cls_info, 'txt'), $parts[0]).$jointure.$parts[1];
 		}
-		if (!empty($params)) {
+		if ((!empty($call_info) && $call_info!='-') || !empty($params)) {
             $item_str_call_info .= !empty($call_info) ? sprintf(self::mask_trace_item_call_info, 
                 $call_info, implode(', ', $params)			
             ) : '';
