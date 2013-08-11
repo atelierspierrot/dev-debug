@@ -708,7 +708,7 @@ class Profiler
 	public static function formatPath($path, $format = 'html', $skip_turns = 2)
 	{
 	    $root_dir = self::getRootDir();
-		$rootdir_info = $format=='html' ? sprintf(self::mask_abbr, $root_dir.'/', '_ROOTDIR').'/' : '_ROOTDIR/';
+		$rootdir_info = $format=='html' ? sprintf(self::mask_abbr, $root_dir.'/', '_ROOTPATH').'/' : '_ROOTPATH/';
 		return str_replace($root_dir.'/', $rootdir_info, $path);
 	}
 
@@ -728,7 +728,7 @@ class Profiler
 	 */
 	public static function getRootDir()
 	{
-		return defined('_ROOTDIR') ? _ROOTDIR : $_SERVER['DOCUMENT_ROOT'];
+		return defined('_ROOTPATH') ? _ROOTPATH : $_SERVER['DOCUMENT_ROOT'];
 	}
 
 	/**
