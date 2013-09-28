@@ -152,13 +152,15 @@ class ErrorException extends StandardErrorException
 	{
         if (defined('_DEVDEBUG_SHUTDOWN_HANDLER') && true===_DEVDEBUG_SHUTDOWN_HANDLER) {
             return '';
-        } else {
+        } elseif (!empty($this->debugger)) {
             if (true===$this->exit) {
                 echo $this->debugger->__toString();
                 exit;
             } else {
                 return $this->debugger->__toString();
             }
+        } else {
+            return parent::__toString();
         }
 	}
   
