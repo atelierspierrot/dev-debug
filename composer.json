@@ -1,6 +1,6 @@
 {
     "name": "atelierspierrot/devdebug",
-    "type": "framework",
+    "type": "library",
     "description": "A PHP Package to help development and debugging.",
     "keywords": [ "php", "library", "development", "debug" ],
     "homepage": "https://github.com/atelierspierrot/devdebug",
