@@ -96,9 +96,11 @@ class Exception extends StandardException
 	{
         if (defined('_DEVDEBUG_SHUTDOWN_HANDLER') && true===_DEVDEBUG_SHUTDOWN_HANDLER) {
             return '';
-        } else {
+        } elseif (!empty($this->debugger)) {
             echo $this->debugger->__toString();
             exit;
+        } else {
+            return parent::__toString();
         }
 	}
 	
