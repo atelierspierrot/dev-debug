@@ -22,8 +22,8 @@
         "psr/log": "dev-master",
         "atelierspierrot/patterns": "dev-master",
         "atelierspierrot/library": "dev-master",
-        "atelierspierrot/assets-manager": "dev-master",
-        "atelierspierrot/templatengine": "dev-master"
+        "atelierspierrot/assets-manager": "dev-plugin",
+        "atelierspierrot/templatengine": "dev-plugin"
     },
     "require-dev": { "sami/sami": "dev-master" },
     "autoload": { "psr-0": {  "DevDebug": "src" } },
