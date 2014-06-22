@@ -9,8 +9,8 @@ table.profiler_table td { vertical-align: top; }
 .debugger { font-family: Arial, Helvetica, sans-serif; }
 .back_link { font-size: .8em; }
 .debugger .debug_message { 
-	margin: 1em 3em; border: 2px solid red; padding: 1em; 
-	-moz-border-radius: 6px; -webkit-border-radius: 6px;
+    margin: 1em 3em; border: 2px solid red; padding: 1em;
+    -moz-border-radius: 6px; -webkit-border-radius: 6px;
 }
 .debugger .error_types_group { margin-bottom: 1em; }
 .debugger li.php_trace_item { letter-spacing: .5pt; }

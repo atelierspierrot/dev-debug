@@ -106,7 +106,7 @@ DevDebug\Debugger::shutdown(true);
     <link rel="stylesheet" href="assets/html5boilerplate/css/normalize.css" />
     <link rel="stylesheet" href="assets/html5boilerplate/css/main.css" />
     <script src="assets/html5boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
-	<link rel="stylesheet" href="assets/styles.css" />
+    <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
     <!--[if lt IE 7]>
@@ -123,8 +123,8 @@ DevDebug\Debugger::shutdown(true);
         </div>
     </header>
 
-	<nav>
-		<h2>Map of the package</h2>
+    <nav>
+        <h2>Map of the package</h2>
         <ul id="navigation_menu" class="menu" role="navigation">
             <li><a href="index.php">Homepage</a></li>
             <li><a href="index.php?test=php_exception">PHP Exception</a></li>
@@ -139,8 +139,8 @@ DevDebug\Debugger::shutdown(true);
             <p class="comment">The sources of this plugin are hosted on <a href="http://github.com">GitHub</a>. To follow sources updates, report a bug or read opened bug tickets and any other information, please see the GitHub website above.</p>
         </div>
 
-    	<p class="credits" id="user_agent"></p>
-	</nav>
+        <p class="credits" id="user_agent"></p>
+    </nav>
 
     <div id="content" role="main">
 
@@ -151,7 +151,7 @@ DevDebug\Debugger::shutdown(true);
     <p>For clarity, the examples below are NOT written as a working PHP code when it seems not necessary. For example, rather than write <var>echo "my_string";</var> we would write <var>echo my_string</var> or rather than <var>var_export($data);</var> we would write <var>echo $data</var>. The main code for these classes'usage is written strictly.</p>
     <p>As a reminder, and because it's always useful, have a look at the <a href="http://pear.php.net/manual/<?php echo $arg_ln; ?>/standards.php">PHP common coding standards</a>.</p>
 
-	<h2 id="tests">How-to</h2>
+    <h2 id="tests">How-to</h2>
     
 <h3>Include the <var>DevDebug</var> namespace</h3>
 
@@ -193,12 +193,12 @@ echo 'require_once __DIR__."/../src/aliases.php";'."\n";
     </div>
 
     <footer id="footer">
-		<div class="credits float-left">
-		    This page is <a href="" title="Check now online" id="html_validation">HTML5</a> & <a href="" title="Check now online" id="css_validation">CSS3</a> valid.
-		</div>
-		<div class="credits float-right">
-		    <a href="https://github.com/atelierspierrot/devdebug">atelierspierrot/devdebug</a> package by <a href="https://github.com/pierowbmstr">Piero Wbmstr</a> under <a href="http://opensource.org/licenses/GPL-3.0">GNU GPL v.3</a> license.
-		</div>
+        <div class="credits float-left">
+            This page is <a href="" title="Check now online" id="html_validation">HTML5</a> & <a href="" title="Check now online" id="css_validation">CSS3</a> valid.
+        </div>
+        <div class="credits float-right">
+            <a href="https://github.com/atelierspierrot/devdebug">atelierspierrot/devdebug</a> package by <a href="https://github.com/pierowbmstr">Piero Wbmstr</a> under <a href="http://opensource.org/licenses/GPL-3.0">GNU GPL v.3</a> license.
+        </div>
     </footer>
 
     <div class="back_menu" id="short_navigation">

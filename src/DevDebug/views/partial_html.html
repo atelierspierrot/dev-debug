@@ -4,12 +4,12 @@ if (empty($debug) || empty($reporter)) return '';
 // ------------------
 // JS in footer
 $_template->getTemplateObject('JavascriptFile', 'jsfiles_footer')
-	->add($_template->getAssetsLoader()->getAssetsWebPath().'/js/scripts.js');
+    ->add($_template->getAssetsLoader()->getAssetsWebPath().'/js/scripts.js');
 
 // ------------------
 // CSS
 $_template->getTemplateObject('CssFile')
-	->add($_template->getAssetsLoader()->getAssetsWebPath().'/css/styles.css');
+    ->add($_template->getAssetsLoader()->getAssetsWebPath().'/css/styles.css');
 
 _use('jquery.tablesorter');
 $_template->getTemplateObject('JavascriptTag')->add(<<<EOT

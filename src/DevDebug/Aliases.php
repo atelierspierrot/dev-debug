@@ -1,10 +1,10 @@
 <?php
 /**
  * DevDebug - PHP framework package
- * Copyleft (c) 2013 Pierre Cassat and contributors
+ * Copyleft (c) 2013-2014 Pierre Cassat and contributors
  * <www.ateliers-pierrot.fr> - <contact@ateliers-pierrot.fr>
  * License GPL-3.0 <http://www.opensource.org/licenses/gpl-3.0.html>
- * Sources <https://github.com/atelierspierrot/devdebug>
+ * Sources <http://github.com/atelierspierrot/devdebug>
  */
 
 /**
@@ -17,9 +17,9 @@ namespace DevDebug\Aliases {}
  */
 namespace {
 
-    use DevDebug\Debugger as Debugger,
-        DevDebug\ErrorException as DevDebugErrorException,
-        DevDebug\Exception as DevDebugException;
+    use DevDebug\Debugger as Debugger;
+    use DevDebug\Exception as DevDebugException;
+    use DevDebug\ErrorException as DevDebugErrorException;
 
     /*
     // enabling each DevDebug handlers
@@ -79,7 +79,7 @@ namespace {
          */
         function devdebugExceptionHandler($e)
         {
-exit('yo');
+//exit('yo');
             // The last call was escaped with '@'
             if (0===error_reporting()) return false;
             $e = new DevDebugException($e->getMessage(), $e->getCode(), $e->getPrevious());
@@ -92,13 +92,15 @@ exit('yo');
         /**
          * DEBUG : writes a simple info, line by line, or export an array or an object
          *
-         * @param misc $str The string, array or object to export
-         * @param int $type Type can be [1]: surround the export in a `pre` HTML block,
-         *          [2]: render "as-is" with HTML tags, or [3]: render "as-is" with no html tags (for CLI)
-         *          (default is 1)
+         * @param mixed $str The string, array or object to export
+         * @param int $type Type can be
+         *                      [1]: surround the export in a `pre` HTML block,
+         *                      [2]: render "as-is" with HTML tags, or [3]: render "as-is" with no html tags (for CLI)
+         *                      (default is 1)
          * @param bool $return Return the debug content or render it (default)
          * @param bool $exit Exit after render (default is `false`)
          * @param int $exit_code An exit code if exit (for CLI usage)
+         * @return void|string
          */
         function _dbg($str = false, $type = 1, $return = false, $exit = false, $exit_code = 0)
         {

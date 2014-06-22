@@ -1,10 +1,10 @@
 <?php
 /**
  * DevDebug - PHP framework package
- * Copyleft (c) 2013 Pierre Cassat and contributors
+ * Copyleft (c) 2013-2014 Pierre Cassat and contributors
  * <www.ateliers-pierrot.fr> - <contact@ateliers-pierrot.fr>
  * License GPL-3.0 <http://www.opensource.org/licenses/gpl-3.0.html>
- * Sources <https://github.com/atelierspierrot/devdebug>
+ * Sources <http://github.com/atelierspierrot/devdebug>
  */
 
 /*
@@ -86,7 +86,7 @@ if (!@function_exists('_dbg'))
     /**
      * DEBUG : writes a simple info, line by line, or export an array or an object
      *
-     * @param misc $str The string, array or object to export
+     * @param mixed $str The string, array or object to export
      * @param int $type Type can be [1]: surround the export in a `pre` HTML block,
      *          [2]: render "as-is" with HTML tags, or [3]: render "as-is" with no html tags (for CLI)
      *          (default is 1)

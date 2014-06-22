@@ -7,11 +7,11 @@ if (!isset($show_backtotop_handlers)) $show_backtotop_handlers = true;
 
 <div id="<?php _getid('page_content'); ?>" class="content">
 
-	<?php if (!empty($flash_message)) : ?>
+    <?php if (!empty($flash_message)) : ?>
     <div class="<?php echo( !empty($flash_message_class) ? $flash_message_class : 'ok' ); ?>_message">
-		<?php echo $flash_message; ?>
+        <?php echo $flash_message; ?>
     </div>
-	<?php endif; ?>
+    <?php endif; ?>
 
     <div class="debugger">
 
@@ -34,28 +34,28 @@ if (!isset($show_backtotop_handlers)) $show_backtotop_handlers = true;
             <a id="<?php echo $reporter->getId('debug_menu'); ?>"></a>
             <ul>
     <?php foreach ($debug->getStacks() as $_i=>$_stack) : ?>
-	    <?php if ($_stack->getType()!='message') : ?>
+        <?php if ($_stack->getType()!='message') : ?>
                 <li><a href="#<?php echo $_i; ?>"><?php echo $_stack->getTitle(); ?></a></li>
-    	<?php endif; ?>
+        <?php endif; ?>
     <?php endforeach; ?>
             </ul>
         </div>
 <?php endif; ?>
 
 <?php foreach ($debug->getStacks() as $_i=>$_stack) : ?>
-	<?php if ($_stack->getType()=='object') : ?>
-		<h3><a id="<?php echo $_i; ?>"></a><?php echo $_stack->getTitle(); ?></h3>
-		<pre><?php print_r( $_stack->getEntity() ); ?></pre>
+    <?php if ($_stack->getType()=='object') : ?>
+        <h3><a id="<?php echo $_i; ?>"></a><?php echo $_stack->getTitle(); ?></h3>
+        <pre><?php print_r( $_stack->getEntity() ); ?></pre>
         <?php if (true===$show_backtotop_handlers) : ?>
-    		<div class="back_link">[ <a href="#<?php echo $reporter->getId('debug_menu'); ?>">back to menu</a> ]</div>
-    	<?php endif; ?>
-	<?php elseif ($_stack->getType()!='message') : ?>
-		<h3><a id="<?php echo $_i; ?>"></a><?php echo $_stack->getTitle(); ?></h3>
-		<?php echo $_stack; ?>
+            <div class="back_link">[ <a href="#<?php echo $reporter->getId('debug_menu'); ?>">back to menu</a> ]</div>
+        <?php endif; ?>
+    <?php elseif ($_stack->getType()!='message') : ?>
+        <h3><a id="<?php echo $_i; ?>"></a><?php echo $_stack->getTitle(); ?></h3>
+        <?php echo $_stack; ?>
         <?php if (true===$show_backtotop_handlers) : ?>
-    		<div class="back_link">[ <a href="#<?php echo $reporter->getId('debug_menu'); ?>">back to menu</a> ]</div>
-    	<?php endif; ?>
-	<?php endif; ?>
+            <div class="back_link">[ <a href="#<?php echo $reporter->getId('debug_menu'); ?>">back to menu</a> ]</div>
+        <?php endif; ?>
+    <?php endif; ?>
 <?php endforeach; ?>
 
     </div>

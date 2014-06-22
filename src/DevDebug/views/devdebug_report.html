@@ -20,15 +20,15 @@ if (empty($stacks) || !is_array($stacks)) $stacks=array();
 <?php endif; ?>
 
 <?php if (!empty($stacks)) : ?>
-	<?php foreach($stacks as $_id=>$group) : ?>
-		<?php if (!empty($group['info'])) { echo $group['info']; } ?>
-		<?php if (!empty($group['presentation'])) { echo $group['presentation']; } ?>
-		<?php if (count($group['tests'])>0) : ?>
-			<?php echo join(' ', $group['tests']); ?>
-		<?php endif; ?>
-		<?php if (!empty($group['conclusion'])) { echo $group['conclusion']; } ?>
-    	<br class="clear" />
-	<?php endforeach; ?>
+    <?php foreach($stacks as $_id=>$group) : ?>
+        <?php if (!empty($group['info'])) { echo $group['info']; } ?>
+        <?php if (!empty($group['presentation'])) { echo $group['presentation']; } ?>
+        <?php if (count($group['tests'])>0) : ?>
+            <?php echo join(' ', $group['tests']); ?>
+        <?php endif; ?>
+        <?php if (!empty($group['conclusion'])) { echo $group['conclusion']; } ?>
+        <br class="clear" />
+    <?php endforeach; ?>
 <?php endif; ?>
 
     </div>
